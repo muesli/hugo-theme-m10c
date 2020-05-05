@@ -18,6 +18,8 @@
     <link href="{{ .Site.RSSLink }}" rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" />
     {{ end }}
 
+    {{ partial "matomo-tracking" . }}
+
   </head>
 
   <body>
