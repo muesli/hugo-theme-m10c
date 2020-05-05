@@ -1,17 +1,48 @@
 {{ define "main" }}
-  <article>
-    <h1>{{ .Title }}</h1>
-    <ul class="posts-list">
-      {{ range $index, $element := .Paginator.Pages }}
-        <li class="posts-list-item">
-          <a class="posts-list-item-title" href="{{ .Permalink }}">{{ .Title }}</a>
-          <span class="posts-list-item-description">
-            {{ partial "icon.html" (dict "ctx" $ "name" "clock") }} {{ .ReadingTime }} min read -
-            {{ .PublishDate.Format "Jan 2, 2006" }}
-          </span>
-        </li>
-      {{ end }}
-    </ul>
-    {{ partial "pagination.html" $ }}
-  </article>
+<article>
+  {{ if .IsHome }}
+  {{ .Site.Params.intro | markdownify }}
+  <br />
+  <h3>{{ .Site.Params.header }}</h3>
+  {{ else }}
+  <h1>{{ .Title }}</h1>
+  {{ end }}
+  <ul class="posts-list">
+    {{ if .IsHome }}
+    {{ $paginator := .Paginate (where .Site.RegularPages "Type" "post") }}
+    {{ range $index, $element := $paginator.Pages }}
+    <li class="posts-list-item">
+      <a class="posts-list-item-title" href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="posts-list-item-description">
+        {{ partial "icon.html" (dict "ctx" $ "name" "clock") }} {{ .ReadingTime }} min read -
+        {{ .PublishDate.Format "Jan 2, 2006" }}
+      </span>
+      <p>
+        <div class="post-content">
+          {{ .Summary }}
+        </div>
+        <a class="posts-list-item-title" href="{{ .Permalink }}">Read the entire post...</a>
+      </p>
+    </li>
+    {{ end }}
+    {{ else }}
+    {{ range $index, $element := .Paginator.Pages }}
+    <li class="posts-list-item">
+      <a class="posts-list-item-title" href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="posts-list-item-description">
+        {{ partial "icon.html" (dict "ctx" $ "name" "clock") }} {{ .ReadingTime }} min read -
+        {{ .PublishDate.Format "Jan 2, 2006" }}
+      </span>
+      <p>
+        <div class="post-content">
+          {{ .Summary }}
+        </div>
+        <a class="posts-list-item-title" href="{{ .Permalink }}">Read the entire post...</a>
+      </p>
+    </li>
+    {{ end }}
+    {{ end }}
+  </ul>
+  {{ partial "pagination.html" $ }}
+</article>
 {{ end }}
